@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="format-detection" content="telephone=no" />
+		<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+		<meta name="apple-mobile-web-app-capable" content="yes"/>
+		<meta names="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<!--<link rel="stylesheet" type="text/css" href="css/index.css" />-->
+		<title>Rock Paper Scissors Game</title>
+		<!-- set Dojo configuration, load Dojo -->
+		<script>
+			dojoConfig= {
+				async: true,
+				mblAlwaysHideAddressBar:true
+			};
+		</script>
+		<script src="dojox/mobile/deviceTheme.js"></script>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/dojo/1.9.2/dojo/dojo.js"></script> 
+		<script>
+			require(["dojox/mobile",
+			         "dojox/mobile/parser",
+			         "dojox/mobile/compat",
+			         "dojox/mobile/deviceTheme",
+					 "dojox/mobile/Heading",
+			         "dojox/mobile/ScrollableView",
+			         "dojox/mobile/Button",
+			         "dojo/dom-attr",
+			         "dojo/_base/array",
+			         "dojox/mobile/compat",
+			         "dojo/domReady!"],
+					function(dm, parser, compat, deviceTheme, heading, scrollableView,
+					         button, domAttr, baseArray, compat) {
+					parser.parse();
+			});
+		</script>
+	<script type="text/javascript">
+		var CHOICE = { // set up enumerations
+			ROCK     : {value: 1, name: "Rock", code: "R"}, 
+			PAPER    : {value: 2, name: "Paper", code: "P"}, 
+			SCISSORS : {value: 3, name: "Scissors", code: "S"}
+		};
+		var plays = 0;
+		var humanWins = 0;
+		var compWins  = 0;
+
+		function playGame(play) {
+			if(typeof play === 'undefined'){return;}
+			var humanChoice = null;
+			var compChoice  = null;
+			plays++;
+			
+			if (play==='R') {
+				humanChoice = CHOICE.ROCK;
+			} else if (play==='P') {
+				humanChoice = CHOICE.PAPER;
+			} else if (play==='S') {
+				humanChoice = CHOICE.SCISSORS;
+			}
+	
+			var computer = (Math.floor( Math.random() * 3 + 0.5 ));
+				if ( computer === 1 ) {
+					compChoice = CHOICE.ROCK }
+				else { if ( computer === 2 ) {
+					compChoice = CHOICE.PAPER }
+				else { 
+					compChoice = CHOICE.SCISSORS }
+				}
+			document.getElementById('result').innerHTML="<p>You chose '" + humanChoice.name + "' and I chose '" + compChoice.name + "'</p>";
+			<!--document.getElementById('log').innerHTML+="H:" + humanChoice.code + " C:" + compChoice.code + "|";-->
+	
+			var win = humanChoice.value - compChoice.value;
+			if ( win === 0 ) { 
+				document.getElementById('result').innerHTML += "<p><b>So we've drawn</b></p>" } 
+			else {
+				if ( win === -2 || win === 1 ) { 
+					document.getElementById('result').innerHTML += "<p><b>So you win</b></p>"; humanWins++; }
+				else {
+					if ( win === -1 || win === 2 ) { 
+						document.getElementById('result').innerHTML += "<p><b>So I win</b></p>"; compWins++; }
+					else {}
+				}
+			}
+			document.getElementById('tally').innerHTML = "<p><i>Leaderboard</i>&nbsp;&nbsp;Plays:&nbsp;" + plays + "<br />Your wins:&nbsp;" + humanWins + "&nbsp;&nbsp;&nbsp;My wins:&nbsp;" + compWins + "&nbsp;&nbsp;&nbsp;Draws:&nbsp;" + (plays - (humanWins + compWins)) + "</p>";
+			if ( compWins < humanWins ) { 
+				document.getElementById('tally').innerHTML += "<p>You're in the lead</p>"; } 
+			else if ( compWins > humanWins ) {
+				document.getElementById('tally').innerHTML += "<p>I'm in the lead</p>"; } 
+			else if ( compWins == humanWins ) {
+				document.getElementById('tally').innerHTML += "<p>We're running head to head</p>"; }
+		}
+		
+		function restart() {
+			plays = 0;
+			humanWins = 0;
+			compWins  = 0;
+			document.getElementById('result').innerHTML = "&nbsp;";
+			document.getElementById('tally').innerHTML = "&nbsp;";
+			document.getElementById('log').innerHTML = "&nbsp;";
+		}
+		</script>
+		<style type="text/css">
+			html, body{
+				height: 100%;
+				overflow: hidden;}
+			p {font-size:25px;}
+			button {font-size:45px; width:250px; margin:20px 50px;}
+			.mblBlueButton {
+				background-image: -webkit-gradient(linear, left top, left bottom, from(#7a9de9), to(#2362dd), color-stop(0.5, #366edf), color-stop(0.5, #215fdc));
+				background-image: linear-gradient(to bottom, #7a9de9 0%, #366edf 50%, #215fdc 50%, #2362dd 100%);
+				color: white;
+			}
+			.mblBlueButtonSelected {
+				background-image: -webkit-gradient(linear, left top, left bottom, from(#8ea4c1), to(#4a6c9b), color-stop(0.5, #5877a2), color-stop(0.5, #476999));
+				background-image: linear-gradient(to bottom, #8ea4c1 0%, #5877a2 50%, #476999 50%, #4a6c9b 100%);
+			}
+		</style>
+	</head>
+	<body style="visibility:hidden;">
+	<div id="settings" dojoType="dojox/mobile/View">
+		<div dojoType="dojox/mobile/Heading" data-dojo-props="fixed: 'top'">
+			Rock Paper Scissors Game
+		</div>
+		<div data-dojo-type="dojox.mobile.RoundRect">
+			<h2 dojoType="dojox.mobile.RoundRectCategory">Choose ...</h2>
+			<button dojoType="dojox.mobile.Button" class="mblBlueButton" label="Rock" onClick="playGame('R')"></button>
+			<button dojoType="dojox.mobile.Button" class="mblBlueButton" label="Paper" onClick="playGame('P')"></button>
+			<button dojoType="dojox.mobile.Button" class="mblBlueButton" label="Scissors" onClick="playGame('S')"></button>
+			<button dojoType="dojox.mobile.Button" class="mblButton" label="Restart" onClick="restart()"></button>
+			<span id="result">&nbsp;</span><br />
+			<span id="tally">&nbsp;</span><br />
+			<span id="log">&nbsp;</span><br />
+		</div>
+	</div>
+	</body>
+</html>
